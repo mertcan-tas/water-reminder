@@ -1,151 +1,117 @@
+// src/stores/settings-store.js
 import { defineStore } from "pinia";
+import { getValue, setValue } from "@/services/store-service.js"; // Tauri store servisi
+import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'; // Autostart eklentisi
 
-export const useSettingsStore = defineStore("settings", {
+export const useSettingsStore = defineStore("appSettings", {
   state: () => ({
-    name: localStorage.getItem("name") || "",
-    age: localStorage.getItem("age") ? Number(localStorage.getItem("age")) : "",
-    height: localStorage.getItem("height")
-      ? Number(localStorage.getItem("height"))
-      : "",
-    weight: localStorage.getItem("weight")
-      ? Number(localStorage.getItem("weight"))
-      : "",
-    activityLevel: localStorage.getItem("activityLevel") || "low",
-
-    waterGoal: localStorage.getItem("waterGoal")
-      ? parseInt(localStorage.getItem("waterGoal"))
-      : 2000,
-
-    reminderFrequency: localStorage.getItem("reminderFrequency")
-      ? parseInt(localStorage.getItem("reminderFrequency"))
-      : 60,
-
-    wakeTime: localStorage.getItem("wakeTime") || "07:00",
-    sleepTime: localStorage.getItem("sleepTime") || "23:00",
-
-    notifications:
-      localStorage.getItem("notifications") === null
-        ? true
-        : localStorage.getItem("notifications") === "true",
+    config: {
+      notificationsEnabled: true,
+      reminderFrequency: 60,
+      wakeTime: "07:00",
+      sleepTime: "23:00",
+      autoStartEnabled: false, // Başlangıçta false, init ile güncellenecek
+    },
+    initialized: false, // Store'un genel yüklenme durumu
+    autostartInitialized: false, // Autostart özelinde yüklenme durumu
   }),
 
   actions: {
-    setName(name) {
-      this.name = name;
-      localStorage.setItem("name", name);
-    },
-    setAge(age) {
-      this.age = age;
-      localStorage.setItem("age", age);
-    },
-    setHeight(height) {
-      this.height = height;
-      localStorage.setItem("height", height);
-    },
-    setWeight(weight) {
-      this.weight = weight;
-      localStorage.setItem("weight", weight);
-    },
-    setActivityLevel(level) {
-      this.activityLevel = level;
-      localStorage.setItem("activityLevel", level);
-    },
+    async initAppSettings() {
+      // Diğer ayarları diskten yükle (Tauri store)
+      if (!this.initialized) {
+        try {
+          const storedNotifications = await getValue("settings_notificationsEnabled");
+          this.config.notificationsEnabled = storedNotifications === null ? true : storedNotifications === "true";
 
-    setWaterGoal(goal) {
-      this.waterGoal = goal;
-      localStorage.setItem("waterGoal", goal);
-    },
+          this.config.reminderFrequency = (await getValue("settings_reminderFrequency"))
+            ? parseInt(await getValue("settings_reminderFrequency"), 10)
+            : 60;
+          this.config.wakeTime = (await getValue("settings_wakeTime")) || "07:00";
+          this.config.sleepTime = (await getValue("settings_sleepTime")) || "23:00";
 
-    setReminderFrequency(minutes) {
-      this.reminderFrequency = minutes;
-      localStorage.setItem("reminderFrequency", minutes);
-    },
-
-    setWakeTime(time) {
-      this.wakeTime = time;
-      localStorage.setItem("wakeTime", time);
-    },
-    setSleepTime(time) {
-      this.sleepTime = time;
-      localStorage.setItem("sleepTime", time);
-    },
-
-    setNotifications(enabled) {
-      this.notifications = enabled;
-      localStorage.setItem("notifications", enabled);
-    },
-
-    initSettings() {
-      this.name = localStorage.getItem("name") || "";
-      this.age = localStorage.getItem("age")
-        ? Number(localStorage.getItem("age"))
-        : "";
-      this.height = localStorage.getItem("height")
-        ? Number(localStorage.getItem("height"))
-        : "";
-      this.weight = localStorage.getItem("weight")
-        ? Number(localStorage.getItem("weight"))
-        : "";
-      this.activityLevel = localStorage.getItem("activityLevel") || "";
-      this.waterGoal = localStorage.getItem("waterGoal")
-        ? parseInt(localStorage.getItem("waterGoal"))
-        : 2000;
-
-      this.reminderFrequency = localStorage.getItem("reminderFrequency")
-        ? parseInt(localStorage.getItem("reminderFrequency"))
-        : 60;
-
-      this.wakeTime = localStorage.getItem("wakeTime") || "07:00";
-      this.sleepTime = localStorage.getItem("sleepTime") || "23:00";
-      this.notifications =
-        localStorage.getItem("notifications") === null
-          ? true
-          : localStorage.getItem("notifications") === "true";
-    },
-
-    saveAllSettings(settings) {
-      this.setName(settings.name);
-      this.setAge(settings.age);
-      this.setHeight(settings.height);
-      this.setWeight(settings.weight);
-      this.setActivityLevel(settings.activityLevel);
-      this.setWaterGoal(settings.waterGoal);
-      this.setReminderFrequency(settings.reminderFrequency);
-      this.setWakeTime(settings.wakeTime);
-      this.setSleepTime(settings.sleepTime);
-      this.setNotifications(settings.notifications);
-    },
-
-    calculateRecommendedWaterIntake() {
-      if (this.weight && !isNaN(this.weight) && this.weight > 0) {
-        const baseIntake = this.weight * 33;
-
-        let activityMultiplier = 1.0;
-
-        switch (this.activityLevel) {
-          case "low":
-            activityMultiplier = 1.0;
-            break;
-          case "moderate":
-            activityMultiplier = 1.1;
-            break;
-          case "high":
-            activityMultiplier = 1.2;
-            break;
-          case "very_high":
-            activityMultiplier = 1.3;
-            break;
-          case "extreme":
-            activityMultiplier = 1.5;
-            break;
-          default:
-            break;
+          this.initialized = true;
+          console.log("Disk-based app settings initialized.");
+        } catch (err) {
+          console.error("Disk-based app settings yüklenirken hata oluştu:", err);
         }
-
-        return Math.round(baseIntake * activityMultiplier);
       }
 
-      return 2000;
+      // Autostart durumunu eklentiden yükle
+      if (!this.autostartInitialized) {
+        try {
+          this.config.autoStartEnabled = await isEnabled();
+          this.autostartInitialized = true;
+          console.log("Autostart status initialized from plugin:", this.config.autoStartEnabled);
+        } catch (err) {
+          console.error("Autostart durumu kontrol edilirken hata (initAppSettings):", err);
+          // Hata durumunda varsayılan olarak false kalabilir veya kullanıcıya bilgi verilebilir.
+          this.config.autoStartEnabled = false; // Güvenli bir varsayılan
+          this.autostartInitialized = true; // Tekrar denememek için
+        }
+      }
     },
+
+    async updateAppSettings(newSettingsData) {
+      // Disk tabanlı ayarları güncelle
+      const diskSettings = {};
+      if (newSettingsData.notificationsEnabled !== undefined) {
+        this.config.notificationsEnabled = newSettingsData.notificationsEnabled;
+        diskSettings.notificationsEnabled = String(this.config.notificationsEnabled);
+      }
+      if (newSettingsData.reminderFrequency !== undefined) {
+        this.config.reminderFrequency = newSettingsData.reminderFrequency;
+        diskSettings.reminderFrequency = this.config.reminderFrequency;
+      }
+      if (newSettingsData.wakeTime !== undefined) {
+        this.config.wakeTime = newSettingsData.wakeTime;
+        diskSettings.wakeTime = this.config.wakeTime;
+      }
+      if (newSettingsData.sleepTime !== undefined) {
+        this.config.sleepTime = newSettingsData.sleepTime;
+        diskSettings.sleepTime = this.config.sleepTime;
+      }
+
+      try {
+        if (Object.keys(diskSettings).length > 0) {
+          if (diskSettings.notificationsEnabled !== undefined) await setValue("settings_notificationsEnabled", diskSettings.notificationsEnabled);
+          if (diskSettings.reminderFrequency !== undefined) await setValue("settings_reminderFrequency", diskSettings.reminderFrequency);
+          if (diskSettings.wakeTime !== undefined) await setValue("settings_wakeTime", diskSettings.wakeTime);
+          if (diskSettings.sleepTime !== undefined) await setValue("settings_sleepTime", diskSettings.sleepTime);
+          console.log("Disk-based app settings updated in Pinia and Tauri store.");
+        }
+      } catch (err) {
+        console.error("Disk-based app settings Tauri'ye kaydedilirken hata:", err);
+      }
+
+      // Autostart ayarı için ayrı bir action kullanmak daha temiz olabilir,
+      // ama eğer updateAppSettings üzerinden geliyorsa burada da yönetilebilir.
+      // Şimdilik toggleAutoStart adında ayrı bir action oluşturalım.
+    },
+
+    async toggleAutoStart() {
+      try {
+        const currentStatus = await isEnabled(); // En güncel durumu al
+        if (currentStatus) {
+          await disable();
+          this.config.autoStartEnabled = false;
+          console.log("Autostart devre dışı bırakıldı.");
+        } else {
+          await enable();
+          this.config.autoStartEnabled = true;
+          console.log("Autostart aktif edildi.");
+        }
+      } catch (err) {
+        console.error("Autostart işlemi sırasında hata (toggleAutoStart):", err);
+        // Hata durumunda, UI'ın state ile senkronize kalması için mevcut durumu tekrar okuyabiliriz
+        try {
+            this.config.autoStartEnabled = await isEnabled();
+        } catch (readError) {
+            console.error("Autostart durumunu tekrar okuma hatası:", readError);
+            // Belki de kullanıcıya bir hata mesajı göstermek daha iyi olur.
+        }
+        throw err; // Hatayı yukarıya fırlat ki view haberdar olsun.
+      }
+    }
   },
 });

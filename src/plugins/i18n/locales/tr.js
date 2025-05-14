@@ -9,9 +9,14 @@ export default {
   },
   pages: {
     home: {
-      home: "Home",
+      title: "Anasayfa",
+      complated_target: "Tamamlanan Hedef",
+      remaining: "Kalan",
+      target: "Hedef",
+      drinking_water_msg: "Litre içildi",
+      drinking_save_btn_msg: "İçtiğin Suyu Kaydet"
     },
-      profile: {
+    profile: {
       title: "Profilim",
       description: "Kişisel bilgilerinizi girerek hatırlatıcıyı özelleştirin",
       full_name: "Ad Soyad",
@@ -27,24 +32,39 @@ export default {
         extreme: "Ekstrem (Günde çift antrenman)",
       },
       daily_target: "Günlük Su Hedefi (ml)",
-      reminder_frequency: "Hatırlatma Sıklığı",
-      reminderFrequencies: {
-        hourly: "Her saat",
-        every_2_hours: "2 saatte bir",
-        every_3_hours: "3 saatte bir",
-        every_4_hours: "4 saatte bir",
-        with_meals: "Öğünlerle birlikte",
-      },
-      waking_hour: "Uyanış Saati",
-      sleep_hour: "Uyku Saati",
-      notification_switch: "Bildirim almak istiyorum",
       save_settings: "Ayarları Kaydet",
       calculate_water: "Benim için Hesapla",
       dialog: {
         add: "Ekle",
         cancel: "Vazgeç",
       },
-      success_message: "Ayarlar Kaydedildi.",
+      success_message: "Profil Güncellendi.",
+      error_message: "Opps Bir Şeyler Ters Gitti",
+    },
+    settings: {
+      title: "Ayarlar",
+      notification_switch: "Bildirim almak istiyorum",
+      reminder_frequency: "Hatırlatma Sıklığı",
+      reminderFrequencies: {
+        every_30_mins: "30 Dakikada Bir",
+        hourly: "Her saat",
+        every_90_mins: "90 Dakikada Bir",
+        every_2_hours: "2 Saatte Bir",
+        every_3_hours: "3 Saatte Bir",
+        every_4_hours: "4 Saatte Bir",
+      },
+      waking_hour: "Uyanış Saati",
+      sleep_hour: "Uyku Saati",
+      auto_start: "Uygulamayı Otomatik Başlat",
+      save_settings_button: "Ayarları Kaydet",
+      success_message: "Ayarlar Güncellendi.",
+      error_message: "Opps Bir Şeyler Ters Gitti",
+      reset_area: {
+        reset_data_btn_text: "Verilerimi Sıfırla",
+        reset_data_msg: "Tüm Verilirin Silinecek ve Geri Alınamıyacak!",
+        reset_data_dialog_accept_btn: "Onayla",
+        reset_data_dialog_decline_btn: "Vazgeç",
+      }
     },
   },
 };

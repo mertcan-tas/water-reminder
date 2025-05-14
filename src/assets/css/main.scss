@@ -1,13 +1,18 @@
 $primary-font: "Roboto", sans-serif;
 
 html,
-body, div {
+body,
+div,
+a {
   font-family: $primary-font !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
 }
 
 .v-application {
   font-family: $primary-font !important;
-
   .headline,
   .title,
   .subtitle-1,
@@ -27,6 +32,5 @@ body, div {
 .no-select {
   user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;     
+  -ms-user-select: none;
 }
-

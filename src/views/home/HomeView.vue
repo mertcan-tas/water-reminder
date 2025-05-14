@@ -10,16 +10,9 @@
             {{ formattedProgress }}%
           </div>
         </v-card-title>
-        <br/>
+        <v-divider class="my-3"></v-divider>
+        
         <v-card-text class="position-relative">
-          <div
-            :style="`right: calc(${goalMarkerRightOffset} + 8px); top: -12px;`"
-            class="position-absolute text-caption text-medium-emphasis"
-            v-if="dailyGoalLiters > 0"
-          >
-            Günlük Hedef
-          </div>
-          
           <v-progress-linear
             color="primary"
             class="bg-grey-lighten-2"
@@ -152,13 +145,10 @@ export default {
       drunkLiters: 0.75,
       dailyGoalLiters: 2.5,
       goalMarkerRightOffset: "0%",
-
       showAddWaterDialog: false,
       waterToAdd: 0.25,
       selectedQuickAddIndex: 0,
-
-      goalCompleted: false,
-      
+      goalCompleted: false,      
       rules: {
         required: (value) => !!value || "Miktar boş olamaz.",
         positive: (value) =>
@@ -208,7 +198,7 @@ export default {
   methods: {
     playSound() {
       if (this.audio) {
-        this.audio.currentTime = 0; // ses başa sarılsın
+        this.audio.currentTime = 0;
         this.audio.play();
       }
     },

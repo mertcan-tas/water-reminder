@@ -11,7 +11,7 @@ export const useThemeStore = defineStore("theme", {
     async initSettings() {
       const savedDarkMode = await getValue("darkMode");
       const savedLanguage = await getValue("language");
-
+      
       this.isDark = savedDarkMode ?? true;
       this.currentLanguage = savedLanguage ?? "tr";
     },
