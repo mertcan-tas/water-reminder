@@ -2,9 +2,6 @@ import { defineStore } from "pinia";
 
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
-    isDark: localStorage.getItem("darkMode") === "true" || false,
-    currentLanguage: localStorage.getItem("language") || "tr",
-
     name: localStorage.getItem("name") || "",
     age: localStorage.getItem("age") ? Number(localStorage.getItem("age")) : "",
     height: localStorage.getItem("height")
@@ -33,16 +30,6 @@ export const useSettingsStore = defineStore("settings", {
   }),
 
   actions: {
-    toggleDarkMode() {
-      this.isDark = !this.isDark;
-      localStorage.setItem("darkMode", this.isDark);
-    },
-
-    setLanguage(lang) {
-      this.currentLanguage = lang;
-      localStorage.setItem("language", lang);
-    },
-
     setName(name) {
       this.name = name;
       localStorage.setItem("name", name);
@@ -89,16 +76,6 @@ export const useSettingsStore = defineStore("settings", {
     },
 
     initSettings() {
-      const savedTheme = localStorage.getItem("darkMode");
-      if (savedTheme !== null) {
-        this.isDark = savedTheme === "true";
-      }
-
-      const savedLanguage = localStorage.getItem("language");
-      if (savedLanguage !== null) {
-        this.currentLanguage = savedLanguage;
-      }
-
       this.name = localStorage.getItem("name") || "";
       this.age = localStorage.getItem("age")
         ? Number(localStorage.getItem("age"))

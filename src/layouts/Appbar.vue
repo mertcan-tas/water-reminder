@@ -5,7 +5,7 @@
     >
 
     <v-spacer></v-spacer>
-
+    
     <v-select
       v-model="themeStore.currentLanguage"
       :items="languages"
@@ -22,7 +22,7 @@
         <v-icon>mdi-translate</v-icon>
       </template>
     </v-select>
-
+    
 
     <v-btn class="mr-3" icon @click="toggleTheme">
       <v-icon>{{
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { useThemeStore } from "@/plugins/stores/themeStore.js";
+import { useThemeStore } from "@/plugins/stores/theme-store.js";
 import { ref, computed } from "vue";
 
 export default {

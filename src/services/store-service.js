@@ -1,28 +1,46 @@
-import { load } from '@tauri-apps/plugin-store';
+import { load } from "@tauri-apps/plugin-store";
 
 let store = null;
 
-// Mağazayı başlat
 export async function initStore() {
   if (!store) {
-    store = await load('store.json', { autoSave: false });
+    store = await load("store.json", { autoSave: false });
+    await initializeDefaultValues();
   }
 }
 
-// Değer ayarla
+async function initializeDefaultValues() {
+  const defaults = {
+    darkMode: true,
+    language: "tr",
+    firstLaunch: true,
+  };
+
+  for (const key in defaults) {
+    const value = await store.get(key);
+    if (value === undefined) {
+      await store.set(key, defaults[key]);
+    }
+  }
+  
+  if (await store.get("firstLaunch")) {
+    console.log("First launch detected!");
+    await store.set("firstLaunch", false);
+    await store.save();
+  }
+}
+
 export async function setValue(key, value) {
   if (!store) await initStore();
   await store.set(key, value);
 }
 
-// Değer al
 export async function getValue(key) {
   if (!store) await initStore();
   const value = await store.get(key);
   return value ?? null;
 }
 
-// Store'u kaydet
 export async function saveStore() {
   if (!store) await initStore();
   await store.save();

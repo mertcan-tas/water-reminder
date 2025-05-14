@@ -1,7 +1,7 @@
 <template>
   <BaseLayout>
     <v-container class="mt-10">
-      <v-card rounded="lg">
+      <v-card rounded="xl" class="border-sm" elevation="0">
         <v-card-title class="text-overline">
           <div class="text-h6 font-weight-bold">
             {{ $t("app.name") }}
@@ -10,7 +10,7 @@
             {{ formattedProgress }}%
           </div>
         </v-card-title>
-        <br />
+        <br/>
         <v-card-text class="position-relative">
           <div
             :style="`right: calc(${goalMarkerRightOffset} + 8px); top: -12px;`"

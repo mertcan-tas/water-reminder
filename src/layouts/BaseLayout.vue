@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { useThemeStore } from "@/plugins/stores/themeStore.js";
+import { useThemeStore } from "@/plugins/stores/theme-store.js";
 import { watch } from "vue";
 import { useI18n } from "vue-i18n";
 

@@ -1,7 +1,7 @@
 <template>
   <BaseLayout>
     <v-container class="mt-10">
-      <v-card rounded="lg" elevation="3" class="pa-2">
+      <v-card rounded="xl" elevation="0" class="pa-2 border-sm">
         <CardTitle></CardTitle>
 
         <v-divider class="my-4"></v-divider>
@@ -149,6 +149,7 @@
                 color="primary"
                 hide-details="true"
                 size="large"
+                elevation="0"
                 variant="outlined"
                 rounded="lg"
                 height="40"
@@ -163,6 +164,7 @@
                 block
                 class="text-capitalize mr-2"
                 color="primary"
+                elevation="0"
                 hide-details="true"
                 size="large"
                 variant="elevated"
@@ -182,7 +184,7 @@
 </template>
 
 <script>
-import { useSettingsStore } from "@/plugins/stores/settingsStore.js";
+import { useSettingsStore } from "@/plugins/stores/settings-store.js";
 import { showNotifi } from "@/utils/alert-util";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";

@@ -6,8 +6,6 @@ import { createApp } from 'vue'
 
 import "@/assets/css/main.scss";
 
-import 'unfonts.css'
-
 const app = createApp(App)
 
 registerPlugins(app)

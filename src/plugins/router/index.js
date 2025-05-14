@@ -30,12 +30,7 @@ const router = createRouter({
     },
     {
       path: "/:catchAll(.*)",
-      redirect: "/errors/404",
-    },
-    {
-      path: "/errors/404",
-      name: "error404",
-      component: HomeView,
+      redirect: "/home",
     },
   ],
 });
