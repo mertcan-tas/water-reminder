@@ -60,6 +60,16 @@ export default {
       save_settings_button: "Save Settings",
       success_message: "Settings Updated.",
       error_message: "Oops! Something Went Wrong",
+      reset_area: {
+        reset_data_btn_text: "Reset My Data",
+        reset_data_dialog_title: "Warning: This Area is Dangerous!",
+        reset_data_dialog_subtitle: "Reset My Data",
+        reset_data_dialog_body:
+          "This action is irreversible. If you proceed, all your data will be permanently deleted. All information, files, and settings stored in the system will be completely removed.",
+        reset_data_dialog_question: "Are you sure you want to continue?",
+        reset_data_dialog_accept_btn: "Confirm",
+        reset_data_dialog_decline_btn: "Cancel",
+      },
     },
   },
 };

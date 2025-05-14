@@ -15,14 +15,14 @@ async function initializeDefaultValues() {
     language: "tr",
     firstLaunch: true,
   };
-
+  
   for (const key in defaults) {
     const value = await store.get(key);
     if (value === undefined) {
       await store.set(key, defaults[key]);
     }
   }
-  
+
   if (await store.get("firstLaunch")) {
     console.log("First launch detected!");
     await store.set("firstLaunch", false);
@@ -43,5 +43,13 @@ export async function getValue(key) {
 
 export async function saveStore() {
   if (!store) await initStore();
+  await store.save();
+}
+
+export async function restoreDefaultValues() {
+  if (!store) await initStore();
+
+  await store.clear();
+  await initializeDefaultValues();
   await store.save();
 }

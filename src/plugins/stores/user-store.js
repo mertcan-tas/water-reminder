@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getValue, setValue } from "@/services/store-service.js"; // Tauri store servisi
+import { getValue, setValue } from "@/services/store-service.js"; 
 
 export const useUserStore = defineStore("user", {
   state: () => ({

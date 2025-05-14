@@ -14,7 +14,7 @@ export default {
       remaining: "Kalan",
       target: "Hedef",
       drinking_water_msg: "Litre içildi",
-      drinking_save_btn_msg: "İçtiğin Suyu Kaydet"
+      drinking_save_btn_msg: "İçtiğin Suyu Kaydet",
     },
     profile: {
       title: "Profilim",
@@ -61,10 +61,14 @@ export default {
       error_message: "Opps Bir Şeyler Ters Gitti",
       reset_area: {
         reset_data_btn_text: "Verilerimi Sıfırla",
-        reset_data_msg: "Tüm Verilirin Silinecek ve Geri Alınamıyacak!",
+        reset_data_dialog_title: "Dikkat: Bu Alan Tehlikeli!",
+        reset_data_dialog_subtitle: "Verilerimi Sıfırla",
+        reset_data_dialog_body:
+          "Bu işlem geri alınamazdır. Devam ederseniz, tüm verileriniz kalıcı olarak silinecektir . Sistemde kayıtlı her türlü bilgi, dosya ve ayar tamamen kaldırılacaktır.",
+        reset_data_dialog_question: "Devam etmek istediğinizden emin misiniz?",
         reset_data_dialog_accept_btn: "Onayla",
         reset_data_dialog_decline_btn: "Vazgeç",
-      }
+      },
     },
   },
 };
