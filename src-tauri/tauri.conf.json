@@ -14,11 +14,13 @@
       {
         "title": "Water Reminder",
         "width": 1024,
-        "height": 1024
+        "height": 1024,
+        "closable": true
       }
     ],
     "security": {
-      "csp": null
+      "dangerousDisableAssetCspModification": true,
+      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'; connect-src ipc: http://ipc.localhost ipc: http://ipc.localhost ipc: http://ipc.localhost"
     }
   },
   "bundle": {
@@ -31,5 +33,15 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "allowlist": {
+      "notification": {
+        "all": true
+      },
+      "autostart": {
+        "enable": true
+      }
+    }
   }
 }

@@ -4,14 +4,15 @@ export default {
   },
   navbar: {
     home: "Home",
+    profile: "Profile",
     settings: "Settings",
   },
   pages: {
     home: {
       home: "Home",
     },
-    settings: {
-      title: "Settings",
+    profile: {
+      title: "Profile",
       description: "Customize the reminder by entering your personal details",
       full_name: "Full Name",
       age: "Age",
@@ -43,6 +44,7 @@ export default {
         add: "Add",
         cancel: "Cancel",
       },
+      success_message: "Settings Saved.",
     },
   },
 };

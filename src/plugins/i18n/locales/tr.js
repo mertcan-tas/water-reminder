@@ -4,14 +4,15 @@ export default {
   },
   navbar: {
     home: "Anasayfa",
+    profile: "Profilim",
     settings: "Ayarlar",
   },
   pages: {
     home: {
       home: "Home",
     },
-    settings: {
-      title: "Ayarlar",
+      profile: {
+      title: "Profilim",
       description: "Kişisel bilgilerinizi girerek hatırlatıcıyı özelleştirin",
       full_name: "Ad Soyad",
       age: "Yaş",
@@ -43,6 +44,7 @@ export default {
         add: "Ekle",
         cancel: "Vazgeç",
       },
+      success_message: "Ayarlar Kaydedildi.",
     },
   },
 };

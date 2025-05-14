@@ -1,6 +1,6 @@
 <template>
   <v-layout class="overflow-visible">
-    <v-bottom-navigation bg-color="surface" color="primary" grow elevation="0" height="70">
+    <v-bottom-navigation bg-color="surface" color="primary" grow elevation="5" height="70">
       <v-btn
         v-for="item in menuItems"
         :key="item.name"
@@ -24,6 +24,7 @@ export default {
     return {
       menuItems: [
         { name: "home", icon: "mdi-home" },
+        { name: "profile", icon: "mdi-account-heart" },
         { name: "settings", icon: "mdi-cog" },
       ],
     };

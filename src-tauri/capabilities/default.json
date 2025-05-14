@@ -7,7 +7,10 @@
   ],
   "permissions": [
     "core:default",
-    "opener:default",
-    "store:default"
+    "notification:default",
+    "store:default",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
   ]
 }

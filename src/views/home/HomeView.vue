@@ -19,7 +19,7 @@
           >
             Günlük Hedef
           </div>
-
+          
           <v-progress-linear
             color="primary"
             class="bg-grey-lighten-2"
@@ -140,11 +140,15 @@
 </template>
 
 <script>
-import { launchRealisticConfetti } from "@/services/confettiService";
+import { launchRealisticConfetti } from "@/utils/confetti-util";
+import sendTauriNotification from "@/services/notification-service";
+import soundEffect from "@/assets/sounds/confetti.mp3";
+import { useI18n } from "vue-i18n";
 
 export default {
   data() {
     return {
+      audio: null,
       drunkLiters: 0.75,
       dailyGoalLiters: 2.5,
       goalMarkerRightOffset: "0%",
@@ -154,7 +158,7 @@ export default {
       selectedQuickAddIndex: 0,
 
       goalCompleted: false,
-
+      
       rules: {
         required: (value) => !!value || "Miktar boş olamaz.",
         positive: (value) =>
@@ -162,6 +166,9 @@ export default {
           "Geçerli bir miktar girin (0'dan büyük).",
       },
     };
+  },
+  mounted() {
+    this.audio = new Audio(soundEffect);
   },
   computed: {
     progressValue() {
@@ -199,6 +206,13 @@ export default {
     },
   },
   methods: {
+    playSound() {
+      if (this.audio) {
+        this.audio.currentTime = 0; // ses başa sarılsın
+        this.audio.play();
+      }
+    },
+
     openAddWaterDialog() {
       this.initializeDefaultWaterAmount();
       this.showAddWaterDialog = true;
@@ -239,11 +253,17 @@ export default {
 
     celebrateGoalCompletion() {
       launchRealisticConfetti();
+
+      sendTauriNotification(
+        "Water Reminder",
+        "Vallahi tüm suyu içtin helal olffffsun"
+      );
+
+      this.playSound();
     },
   },
   created() {
     this.initializeDefaultWaterAmount();
-
     this.goalCompleted = this.isGoalReached;
   },
 };
