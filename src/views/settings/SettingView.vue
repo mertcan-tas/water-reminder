@@ -101,7 +101,6 @@
             color="primary"
             size="64"
           ></v-progress-circular>
-          <p class="mt-4">{{ $t("pages.settings.error_message") }}</p>
         </v-container>
       </v-card>
     </v-container>

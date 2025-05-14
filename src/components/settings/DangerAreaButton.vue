@@ -11,7 +11,7 @@
       {{ $t("pages.settings.reset_area.reset_data_btn_text") }}
     </v-btn>
   </v-col>
-
+  
   <v-dialog v-model="dialog" max-width="450">
     <v-card class="mx-auto rounded-lg" width="400" loading>
       <template v-slot:title>

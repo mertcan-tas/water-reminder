@@ -1,17 +1,17 @@
 <template>
-  <BaseLayout>
+  <BaseLayout v-if="userStore.initialized">
     <v-container class="mt-10">
       <v-card rounded="xl" class="border-sm" elevation="0">
-        <v-card-title class="text-overline">
-          <div class="text-h6 font-weight-bold">
-            {{ $t("app.name") }}
+        <v-card-title class="text-center">
+          <div class="text-h6 font-weight-bold text-grey">
+            {{ $t("pages.home.complated_target") }}
           </div>
-          <div class="text-blue-darken-3 text-h4 font-weight-bold">
+          <div class="text-h4 font-weight-bold text-center mt-1 text-primary">
             {{ formattedProgress }}%
           </div>
         </v-card-title>
-        <v-divider class="my-3"></v-divider>
-        
+
+        <v-divider class="my-1"></v-divider>
         <v-card-text class="position-relative">
           <v-progress-linear
             color="primary"
@@ -19,29 +19,33 @@
             height="22"
             :model-value="progressValue"
             rounded="xl"
-            stream
+            striped
           >
           </v-progress-linear>
 
           <div class="d-flex justify-space-between py-3 mt-2">
             <span class="text-light-blue-darken-3 font-weight-medium">
-              {{ drunkLiters.toFixed(2) }} Litre içildi
+              {{ drunkLiters.toFixed(2) }} {{ $t("pages.home.liter") }}
+              {{ $t("pages.home.drinking_water_msg") }}
             </span>
             <span class="text-medium-emphasis">
-              Hedef: {{ dailyGoalLiters.toFixed(2) }} Litre
+              {{ $t("pages.home.target") }}: {{ dailyGoalLiters.toFixed(2) }}
+              {{ $t("pages.home.liter") }}
             </span>
           </div>
+
           <div
-            class="d-flex justify-start text-caption"
             v-if="remainingLiters > 0 && dailyGoalLiters > 0"
+            class="d-flex justify-start text-caption"
           >
-            Kalan: {{ remainingLiters.toFixed(2) }} Litre
+            {{ $t("pages.home.remaining") }}: {{ remainingLiters.toFixed(2) }}
+            {{ $t("pages.home.liter") }}
           </div>
           <div
+            v-else-if="isGoalReached"
             class="d-flex justify-start text-caption text-green-darken-2 font-weight-medium"
-            v-else-if="dailyGoalLiters > 0 && drunkLiters >= dailyGoalLiters"
           >
-            Hedef tamamlandı! 🎉
+            {{ $t("pages.home.target_complated_msg") }} 🎉
           </div>
         </v-card-text>
 
@@ -50,20 +54,20 @@
         <v-list-item
           append-icon="mdi-water-plus"
           lines="two"
-          subtitle="İçtiğin suyu kaydet"
+          :subtitle="$t('pages.home.add_liter_button_subtitle')"
           link
           @click="openAddWaterDialog"
         >
-          <v-list-item-title class="font-weight-bold"
-            >Su Ekle</v-list-item-title
-          >
+          <v-list-item-title class="font-weight-bold mt-1">
+            {{ $t("pages.home.add_liter_button_title") }}
+          </v-list-item-title>
         </v-list-item>
       </v-card>
 
-      <v-dialog v-model="showAddWaterDialog" persistent max-width="580px">
+      <v-dialog v-model="showAddWaterDialog" max-width="580px">
         <v-card>
           <v-card-title class="mt-3 text-center">
-            Ne Kadar Su İçtin?
+            {{ $t("pages.home.add_dialog.dialog_title") }}
           </v-card-title>
           <v-card-text class="pb-3">
             <v-container>
@@ -71,17 +75,21 @@
                 <v-col cols="12" class="pb-1">
                   <v-text-field
                     v-model.number="waterToAdd"
-                    label="Miktar"
+                    :label="$t('pages.home.add_dialog.water_amount')"
                     type="number"
-                    suffix="Litre"
+                    :suffix="$t('pages.home.add_dialog.liter')"
                     variant="outlined"
                     autofocus
                     :rules="[rules.required, rules.positive]"
                     ref="waterToAddInput"
-                  ></v-text-field>
+                  >
+                  </v-text-field>
                 </v-col>
+
                 <v-col cols="12" class="pt-0">
-                  <div class="text-caption mb-2">Hızlı Ekle:</div>
+                  <div class="text-caption mb-2">
+                    {{ $t("pages.home.add_dialog.add_quick") }}:
+                  </div>
                   <v-btn-toggle
                     v-model="selectedQuickAddIndex"
                     color="light-blue"
@@ -93,19 +101,24 @@
                     <v-btn
                       @click="setWaterToAdd(0.25)"
                       class="flex-grow-1 text-capitalize"
-                      >Bardak (0.25L)</v-btn
                     >
+                      {{ $t("pages.home.add_dialog.add_quick_glass") }} (0.25L)
+                    </v-btn>
 
                     <v-btn
                       @click="setWaterToAdd(0.5)"
                       class="flex-grow-1 text-capitalize"
-                      >Şişe (0.50L)</v-btn
                     >
+                      {{ $t("pages.home.add_dialog.add_quick_bottle") }} (0.50L)
+                    </v-btn>
+
                     <v-btn
                       @click="setWaterToAdd(0.75)"
                       class="flex-grow-1 text-capitalize"
-                      >Büyük Şişe (0.75L)</v-btn
                     >
+                      {{ $t("pages.home.add_dialog.add_quick_big_bottle") }}
+                      (0.75L)
+                    </v-btn>
                   </v-btn-toggle>
                 </v-col>
               </v-row>
@@ -113,21 +126,36 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="grey-darken-1" variant="text" @click="closeDialog">
-              İptal
+            <v-btn
+              color="grey-darken-1"
+              variant="tonal"
+              size="small"
+              @click="closeDialog"
+            >
+              {{ $t("pages.home.add_dialog.dialog_cancel_button") }}
             </v-btn>
             <v-btn
               color="primary"
               size="small"
-              variant="text"
+              variant="tonal"
               @click="addWaterAndValidate"
               :disabled="!isValidWaterToAdd"
             >
-              Ekle
+              {{ $t("pages.home.add_dialog.dialog_add_button") }}
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-container>
+  </BaseLayout>
+
+  <BaseLayout v-else>
+    <v-container class="text-center mt-10">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        size="64"
+      ></v-progress-circular>
     </v-container>
   </BaseLayout>
 </template>
@@ -136,62 +164,78 @@
 import { launchRealisticConfetti } from "@/utils/confetti-util";
 import sendTauriNotification from "@/services/notification-service";
 import soundEffect from "@/assets/sounds/confetti.mp3";
-import { useI18n } from "vue-i18n";
+import { useUserStore } from "@/plugins/stores/user-store.js";
 
 export default {
+  setup() {
+    const userStore = useUserStore();
+    return { userStore };
+  },
   data() {
     return {
       audio: null,
-      drunkLiters: 0.75,
-      dailyGoalLiters: 2.5,
-      goalMarkerRightOffset: "0%",
       showAddWaterDialog: false,
       waterToAdd: 0.25,
       selectedQuickAddIndex: 0,
-      goalCompleted: false,      
       rules: {
-        required: (value) => !!value || "Miktar boş olamaz.",
+        required: (value) =>
+          !!value || this.$t("pages.home.add_dialog.validation_required_msg"),
         positive: (value) =>
           (!isNaN(parseFloat(value)) && value > 0) ||
-          "Geçerli bir miktar girin (0'dan büyük).",
+          this.$t("pages.home.add_dialog.validation_positive_value_msg"),
       },
     };
   },
-  mounted() {
+  async mounted() {
     this.audio = new Audio(soundEffect);
+    await this.userStore.initUserProfile();
   },
   computed: {
     progressValue() {
-      if (this.dailyGoalLiters <= 0) {
-        return 0;
-      }
+      if (!this.userStore?.profile || this.dailyGoalLiters <= 0) return 0;
       const percentage = (this.drunkLiters / this.dailyGoalLiters) * 100;
       return Math.min(percentage, 100);
     },
+
     formattedProgress() {
       return this.progressValue.toFixed(0);
     },
-    remainingLiters() {
-      const remaining = this.dailyGoalLiters - this.drunkLiters;
-      return Math.max(0, remaining);
+
+    drunkLiters() {
+      return (this.userStore?.profile?.waterIntake ?? 0) / 1000;
     },
+
+    dailyGoalLiters() {
+      return (this.userStore?.profile?.waterGoal ?? 2000) / 1000;
+    },
+
+    remainingLiters() {
+      const remaining =
+        (this.userStore?.profile?.waterGoal ?? 2000) -
+        (this.userStore?.profile?.waterIntake ?? 0);
+      return Math.max(remaining / 1000, 0);
+    },
+
     isValidWaterToAdd() {
       return !isNaN(parseFloat(this.waterToAdd)) && this.waterToAdd > 0;
     },
+
     isGoalReached() {
-      return (
-        this.dailyGoalLiters > 0 && this.drunkLiters >= this.dailyGoalLiters
-      );
+      const waterGoal = this.userStore?.profile?.waterGoal ?? 2000;
+      const waterIntake = this.userStore?.profile?.waterIntake ?? 0;
+      return waterGoal > 0 && waterIntake >= waterGoal;
     },
   },
-
   watch: {
-    drunkLiters(newValue, oldValue) {
-      if (this.isGoalReached && !this.goalCompleted) {
-        this.goalCompleted = true;
+    isGoalReached(newVal) {
+      if (
+        this.userStore.initialized &&
+        newVal &&
+        !this.userStore.profile.goalCompletedToday
+      ) {
         this.celebrateGoalCompletion();
-      } else if (!this.isGoalReached && this.goalCompleted) {
-        this.goalCompleted = false;
+
+        this.userStore.updateUserProfile({ goalCompletedToday: true });
       }
     },
   },
@@ -212,9 +256,11 @@ export default {
         }
       });
     },
-    addWaterAndValidate() {
+
+    async addWaterAndValidate() {
       if (this.isValidWaterToAdd) {
-        this.drunkLiters += parseFloat(this.waterToAdd);
+        const mlToAdd = parseFloat(this.waterToAdd) * 1000;
+        await this.userStore.addWaterIntake(mlToAdd);
         this.closeDialog();
       } else {
         if (this.$refs.waterToAddInput) {
@@ -222,39 +268,35 @@ export default {
         }
       }
     },
+
     closeDialog() {
       this.showAddWaterDialog = false;
-
       this.waterToAdd = 0.25;
       this.selectedQuickAddIndex = 0;
     },
+
     setWaterToAdd(amount) {
       this.waterToAdd = amount;
-
-      if (amount === 0.25) this.selectedQuickAddIndex = 0;
-      else if (amount === 0.5) this.selectedQuickAddIndex = 1;
-      else if (amount === 0.75) this.selectedQuickAddIndex = 2;
-      else this.selectedQuickAddIndex = undefined;
+      this.selectedQuickAddIndex = [0.25, 0.5, 0.75].indexOf(amount);
     },
+
     initializeDefaultWaterAmount() {
       const amounts = [0.25, 0.5, 0.75];
       this.waterToAdd = amounts[this.selectedQuickAddIndex] || 0.25;
     },
 
     celebrateGoalCompletion() {
+      this.playSound();
       launchRealisticConfetti();
 
       sendTauriNotification(
-        "Water Reminder",
-        "Vallahi tüm suyu içtin helal olffffsun"
+        "Su Hedefi Tamamlandı 🎉",
+        "Tebrikler! Tüm suyunu içtin helal olsun!"
       );
-
-      this.playSound();
     },
   },
   created() {
     this.initializeDefaultWaterAmount();
-    this.goalCompleted = this.isGoalReached;
   },
 };
 </script>

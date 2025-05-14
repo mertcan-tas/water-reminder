@@ -1,7 +1,6 @@
-// src/stores/settings-store.js
 import { defineStore } from "pinia";
-import { getValue, setValue } from "@/services/store-service.js"; // Tauri store servisi
-import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart'; // Autostart eklentisi
+import { getValue, setValue } from "@/services/store-service.js";
+import { enable, isEnabled, disable } from "@tauri-apps/plugin-autostart";
 
 export const useSettingsStore = defineStore("appSettings", {
   state: () => ({
@@ -9,55 +8,72 @@ export const useSettingsStore = defineStore("appSettings", {
       notificationsEnabled: true,
       reminderFrequency: 60,
       wakeTime: "07:00",
-      sleepTime: "23:00",
-      autoStartEnabled: false, // Başlangıçta false, init ile güncellenecek
+      sleepTime: "22:00",
+      autoStartEnabled: false,
     },
-    initialized: false, // Store'un genel yüklenme durumu
-    autostartInitialized: false, // Autostart özelinde yüklenme durumu
+    initialized: false,
+    autostartInitialized: false,
   }),
 
   actions: {
     async initAppSettings() {
-      // Diğer ayarları diskten yükle (Tauri store)
       if (!this.initialized) {
         try {
-          const storedNotifications = await getValue("settings_notificationsEnabled");
-          this.config.notificationsEnabled = storedNotifications === null ? true : storedNotifications === "true";
+          const storedNotifications = await getValue(
+            "settings_notificationsEnabled"
+          );
+          this.config.notificationsEnabled =
+            storedNotifications === null
+              ? true
+              : storedNotifications === "true";
 
-          this.config.reminderFrequency = (await getValue("settings_reminderFrequency"))
+          this.config.reminderFrequency = (await getValue(
+            "settings_reminderFrequency"
+          ))
             ? parseInt(await getValue("settings_reminderFrequency"), 10)
             : 60;
-          this.config.wakeTime = (await getValue("settings_wakeTime")) || "07:00";
-          this.config.sleepTime = (await getValue("settings_sleepTime")) || "23:00";
+          this.config.wakeTime =
+            (await getValue("settings_wakeTime")) || "07:00";
+          this.config.sleepTime =
+            (await getValue("settings_sleepTime")) || "23:00";
 
           this.initialized = true;
           console.log("Disk-based app settings initialized.");
         } catch (err) {
-          console.error("Disk-based app settings yüklenirken hata oluştu:", err);
+          console.error(
+            "An error occurred while loading disk-based app settings:",
+            err
+          );
         }
       }
 
-      // Autostart durumunu eklentiden yükle
       if (!this.autostartInitialized) {
         try {
           this.config.autoStartEnabled = await isEnabled();
           this.autostartInitialized = true;
-          console.log("Autostart status initialized from plugin:", this.config.autoStartEnabled);
+          console.log(
+            "Autostart status initialized from plugin:",
+            this.config.autoStartEnabled
+          );
         } catch (err) {
-          console.error("Autostart durumu kontrol edilirken hata (initAppSettings):", err);
-          // Hata durumunda varsayılan olarak false kalabilir veya kullanıcıya bilgi verilebilir.
-          this.config.autoStartEnabled = false; // Güvenli bir varsayılan
-          this.autostartInitialized = true; // Tekrar denememek için
+          console.error(
+            "Error checking autostart status (initAppSettings):",
+            err
+          );
+
+          this.config.autoStartEnabled = false;
+          this.autostartInitialized = true;
         }
       }
     },
 
     async updateAppSettings(newSettingsData) {
-      // Disk tabanlı ayarları güncelle
       const diskSettings = {};
       if (newSettingsData.notificationsEnabled !== undefined) {
         this.config.notificationsEnabled = newSettingsData.notificationsEnabled;
-        diskSettings.notificationsEnabled = String(this.config.notificationsEnabled);
+        diskSettings.notificationsEnabled = String(
+          this.config.notificationsEnabled
+        );
       }
       if (newSettingsData.reminderFrequency !== undefined) {
         this.config.reminderFrequency = newSettingsData.reminderFrequency;
@@ -74,44 +90,57 @@ export const useSettingsStore = defineStore("appSettings", {
 
       try {
         if (Object.keys(diskSettings).length > 0) {
-          if (diskSettings.notificationsEnabled !== undefined) await setValue("settings_notificationsEnabled", diskSettings.notificationsEnabled);
-          if (diskSettings.reminderFrequency !== undefined) await setValue("settings_reminderFrequency", diskSettings.reminderFrequency);
-          if (diskSettings.wakeTime !== undefined) await setValue("settings_wakeTime", diskSettings.wakeTime);
-          if (diskSettings.sleepTime !== undefined) await setValue("settings_sleepTime", diskSettings.sleepTime);
-          console.log("Disk-based app settings updated in Pinia and Tauri store.");
+          if (diskSettings.notificationsEnabled !== undefined)
+            await setValue(
+              "settings_notificationsEnabled",
+              diskSettings.notificationsEnabled
+            );
+          if (diskSettings.reminderFrequency !== undefined)
+            await setValue(
+              "settings_reminderFrequency",
+              diskSettings.reminderFrequency
+            );
+          if (diskSettings.wakeTime !== undefined)
+            await setValue("settings_wakeTime", diskSettings.wakeTime);
+          if (diskSettings.sleepTime !== undefined)
+            await setValue("settings_sleepTime", diskSettings.sleepTime);
+          console.log(
+            "Disk-based app settings updated in Pinia and Tauri store."
+          );
         }
       } catch (err) {
-        console.error("Disk-based app settings Tauri'ye kaydedilirken hata:", err);
+        console.error(
+          "Error while displaying disk-based application settings to Tauri:",
+          err
+        );
       }
-
-      // Autostart ayarı için ayrı bir action kullanmak daha temiz olabilir,
-      // ama eğer updateAppSettings üzerinden geliyorsa burada da yönetilebilir.
-      // Şimdilik toggleAutoStart adında ayrı bir action oluşturalım.
     },
 
     async toggleAutoStart() {
       try {
-        const currentStatus = await isEnabled(); // En güncel durumu al
+        const currentStatus = await isEnabled();
         if (currentStatus) {
           await disable();
           this.config.autoStartEnabled = false;
-          console.log("Autostart devre dışı bırakıldı.");
+          console.log("Autostart is disabled.");
         } else {
           await enable();
           this.config.autoStartEnabled = true;
-          console.log("Autostart aktif edildi.");
+          console.log("Autostart activated.");
         }
       } catch (err) {
-        console.error("Autostart işlemi sırasında hata (toggleAutoStart):", err);
-        // Hata durumunda, UI'ın state ile senkronize kalması için mevcut durumu tekrar okuyabiliriz
+        console.error(
+          "Error during autostart process (toggleAutoStart):",
+          err
+        );
+
         try {
-            this.config.autoStartEnabled = await isEnabled();
+          this.config.autoStartEnabled = await isEnabled();
         } catch (readError) {
-            console.error("Autostart durumunu tekrar okuma hatası:", readError);
-            // Belki de kullanıcıya bir hata mesajı göstermek daha iyi olur.
+          console.error("Error rereading autostart status:", readError);
         }
-        throw err; // Hatayı yukarıya fırlat ki view haberdar olsun.
+        throw err;
       }
-    }
+    },
   },
 });

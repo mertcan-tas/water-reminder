@@ -71,7 +71,7 @@
                 :label="$t('pages.profile.daily_target')"
                 suffix="ml"
                 min="500"
-                max="6000"
+                max="8000"
                 step="50"
                 thumb-label="always"
                 color="primary"
@@ -111,7 +111,6 @@
             color="primary"
             size="64"
           ></v-progress-circular>
-          <p class="mt-4">{{ $t("pages.profile.error_message") }}</p>
         </v-container>
       </v-card>
     </v-container>
@@ -161,14 +160,17 @@ const activityLevels = computed(() => [
 ]);
 
 const calculateWater = () => {
-  userStore
-    .updateUserProfile({
-      weight: localProfile.value.weight,
-      activityLevel: localProfile.value.activityLevel,
-    })
-    .then(() => {
-      userStore.calculateRecommendedWaterIntake();
-    });
+  const updatedData = {
+    weight: localProfile.value.weight,
+    activityLevel: localProfile.value.activityLevel,
+    name: localProfile.value.name,
+    age: localProfile.value.age,
+    height: localProfile.value.height,
+  };
+
+  userStore.updateUserProfile(updatedData).then(() => {
+    userStore.calculateRecommendedWaterIntake();
+  });
 };
 
 const saveProfile = async () => {
