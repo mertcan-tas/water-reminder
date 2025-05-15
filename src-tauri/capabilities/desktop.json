@@ -10,6 +10,11 @@
     "core:app:allow-default-window-icon",
     "core:window:allow-hide",
     "core:app:allow-app-show",
-    "core:window:allow-set-skip-taskbar"
+    "core:window:allow-set-skip-taskbar",
+    "global-shortcut:allow-is-registered",
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "global-shortcut:default",
+    "core:window:allow-set-focus"
   ]
 }

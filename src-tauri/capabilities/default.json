@@ -10,6 +10,8 @@
     "autostart:allow-enable",
     "autostart:allow-disable",
     "autostart:allow-is-enabled",
-    "process:default"
+    "process:default",
+    "core:window:allow-show",
+    "core:window:allow-set-focus"
   ]
 }
