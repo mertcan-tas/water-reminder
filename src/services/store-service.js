@@ -35,7 +35,7 @@ async function initializeDefaultValues() {
 }
 
 export async function checkAndResetDailyWaterIntake() {
-  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const today = new Date().toISOString().split("T")[0];
   const currentDay = await store.get("user_currentDay");
 
   if (currentDay !== today) {

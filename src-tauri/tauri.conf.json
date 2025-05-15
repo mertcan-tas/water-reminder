@@ -15,7 +15,9 @@
         "title": "Water Reminder",
         "width": 1080,
         "height": 850,
-        "closable": true
+        "closable": true,
+        "visible": true,
+        "skipTaskbar": true
       }
     ],
     "security": {
