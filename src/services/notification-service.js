@@ -7,7 +7,7 @@ import {
 async function sendTauriNotification(title, body) {
   try {
     let permissionGranted = await isPermissionGranted();
-
+    
     if (!permissionGranted) {
       const permission = await requestPermission();
       permissionGranted = permission === "granted";

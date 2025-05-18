@@ -1,6 +1,7 @@
 <template>
   <RouterView />
 </template>
+
 <script setup>
 import { onMounted } from "vue";
 import { TrayIcon } from "@tauri-apps/api/tray";
