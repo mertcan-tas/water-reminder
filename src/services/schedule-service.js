@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import sendTauriNotification from "@/services/notification-service.js";
 import { useSettingsStore } from "@/plugins/stores/settings-store.js";
-import { watch, ref } from "vue";
+import { watch } from "vue";
 import { getValue } from "@/services/store-service.js";
 
 export const useNotificationServiceStore = defineStore("notificationService", {
@@ -12,69 +12,112 @@ export const useNotificationServiceStore = defineStore("notificationService", {
 
   actions: {
     async startNotificationService() {
-      if (this.isRunning) return;
+      if (this.isRunning) {
+        console.log("Notification service is already running");
+        return;
+      }
+
+      console.log("Starting notification service...");
       this.isRunning = true;
 
       const settingsStore = useSettingsStore();
+
       await settingsStore.initAppSettings();
 
       const checkAndSendNotifications = async () => {
+        console.log("Checking notifications...");
         const notificationsEnabled = settingsStore.config.notificationsEnabled;
-        if (!notificationsEnabled) return;
+        if (!notificationsEnabled) {
+          console.log("Notifications are disabled");
+          return;
+        }
 
         const wakeTime = settingsStore.config.wakeTime;
         const sleepTime = settingsStore.config.sleepTime;
 
         const now = new Date();
-        const currentHour = now.getHours().toString().padStart(2, "0");
-        const currentMinute = now.getMinutes().toString().padStart(2, "0");
-        const currentTime = `${currentHour}:${currentMinute}`;
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
 
-        const isWithinTimeRange =
-          currentTime >= wakeTime && currentTime < sleepTime;
+        const [wakeHour, wakeMinute] = wakeTime.split(":").map(Number);
+        const [sleepHour, sleepMinute] = sleepTime.split(":").map(Number);
 
-        if (!isWithinTimeRange) return;
+        const currentTimeInMinutes = currentHour * 60 + currentMinute;
+        const wakeTimeInMinutes = wakeHour * 60 + wakeMinute;
+        const sleepTimeInMinutes = sleepHour * 60 + sleepMinute;
 
+        let isWithinTimeRange = false;
+
+        if (wakeTimeInMinutes < sleepTimeInMinutes) {
+          isWithinTimeRange =
+            currentTimeInMinutes >= wakeTimeInMinutes &&
+            currentTimeInMinutes < sleepTimeInMinutes;
+        } else {
+          isWithinTimeRange =
+            currentTimeInMinutes >= wakeTimeInMinutes ||
+            currentTimeInMinutes < sleepTimeInMinutes;
+        }
+
+        if (!isWithinTimeRange) {
+          console.log(
+            "Outside of notification time range. Current time:",
+            `${currentHour.toString().padStart(2, "0")}:${currentMinute
+              .toString()
+              .padStart(2, "0")}`,
+            "Wake:",
+            wakeTime,
+            "Sleep:",
+            sleepTime
+          );
+          return;
+        }
+        
         try {
           const userWaterIntake = (await getValue("user_waterIntake")) || 0;
           const message = `Su içmeyi unutma! Bugün ${userWaterIntake} ml içtin.`;
-
-          await sendTauriNotification("Su Hatırlatıcısı", message);
+          console.log("Sending reminder notification:", message);
+          sendTauriNotification("Water Reminder", message);
         } catch (err) {
-          console.error("Bildirim gönderilirken hata oluştu:", err);
+          console.error("Notification Error:", err);
         }
       };
 
       await checkAndSendNotifications();
 
-      const reminderFrequencyRef = ref(settingsStore.config.reminderFrequency);
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+      }
 
+      const frequency = settingsStore.config.reminderFrequency;
+      console.log(`Setting up notification interval for ${frequency} minutes`);
       this.intervalId = setInterval(
         checkAndSendNotifications,
-        reminderFrequencyRef.value * 60 * 1000
+        frequency * 60 * 1000
       );
 
       watch(
         () => settingsStore.config.notificationsEnabled,
         (newVal) => {
+          console.log("Notification enabled status changed:", newVal);
           if (!newVal && this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
             this.isRunning = false;
             console.log("Bildirim servisi kapatıldı.");
+          } else if (newVal && !this.isRunning) {
+            this.startNotificationService();
           }
         }
       );
 
       watch(
         () => settingsStore.config.reminderFrequency,
-        (newVal) => {
-          if (this.intervalId) clearInterval(this.intervalId);
-          this.intervalId = setInterval(
-            checkAndSendNotifications,
-            newVal * 60 * 1000
-          );
-          console.log(`Yeni hatırlatıcı frekansına geçildi: ${newVal} dakika`);
+        async (newVal) => {
+          console.log("Reminder frequency changed to:", newVal);
+          this.stopNotificationService();
+          if (settingsStore.config.notificationsEnabled) {
+            await this.startNotificationService();
+          }
         }
       );
 
@@ -82,13 +125,18 @@ export const useNotificationServiceStore = defineStore("notificationService", {
         () => [settingsStore.config.wakeTime, settingsStore.config.sleepTime],
         () => {
           console.log(
-            "Uyanma/uyku saati değişti. Bildirim zamanlaması güncellenecek."
+            "Wake/sleep time changed, restarting notification service"
           );
+          this.stopNotificationService();
+          if (settingsStore.config.notificationsEnabled) {
+            this.startNotificationService();
+          }
         }
       );
     },
 
     stopNotificationService() {
+      console.log("Stopping notification service...");
       if (this.intervalId) {
         clearInterval(this.intervalId);
         this.intervalId = null;

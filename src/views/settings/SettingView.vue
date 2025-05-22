@@ -148,6 +148,7 @@ onMounted(async () => {
 });
 
 const reminderFrequencies = computed(() => [
+  { value: 1, text: t("pages.settings.reminderFrequencies.every_1_min") },
   { value: 30, text: t("pages.settings.reminderFrequencies.every_30_mins") },
   { value: 60, text: t("pages.settings.reminderFrequencies.hourly") },
   { value: 90, text: t("pages.settings.reminderFrequencies.every_90_mins") },

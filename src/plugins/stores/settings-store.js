@@ -6,7 +6,7 @@ export const useSettingsStore = defineStore("appSettings", {
   state: () => ({
     config: {
       notificationsEnabled: true,
-      reminderFrequency: 60,
+      reminderFrequency: 1,
       wakeTime: "07:00",
       sleepTime: "22:00",
       autoStartEnabled: false,

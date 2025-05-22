@@ -288,11 +288,6 @@ export default {
     celebrateGoalCompletion() {
       this.playSound();
       launchRealisticConfetti();
-
-      sendTauriNotification(
-        "Su Hedefi Tamamlandı 🎉",
-        "Tebrikler! Tüm suyunu içtin helal olsun!"
-      );
     },
   },
   created() {

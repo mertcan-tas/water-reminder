@@ -64,6 +64,7 @@ export default {
       notification_switch: "I Want To Receive Notifications",
       reminder_frequency: "Reminder Frequency",
       reminderFrequencies: {
+        every_1_min: "Every 1 Minute",
         every_30_mins: "Every 30 Minutes",
         hourly: "Hourly",
         every_90_mins: "Every 90 Minutes",

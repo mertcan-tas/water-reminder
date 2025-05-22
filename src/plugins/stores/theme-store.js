@@ -4,7 +4,7 @@ import { getValue, setValue } from "@/services/store-service.js";
 export const useThemeStore = defineStore("theme", {
   state: () => ({
     isDark: true,
-    currentLanguage: "tr",
+    currentLanguage: "en",
   }),
   
   actions: {
@@ -13,7 +13,7 @@ export const useThemeStore = defineStore("theme", {
       const savedLanguage = await getValue("language");
       
       this.isDark = savedDarkMode ?? true;
-      this.currentLanguage = savedLanguage ?? "tr";
+      this.currentLanguage = savedLanguage ?? "en";
     },
 
     async toggleDarkMode() {

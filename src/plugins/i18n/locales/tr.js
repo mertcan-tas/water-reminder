@@ -63,6 +63,7 @@ export default {
       notification_switch: "Bildirim almak istiyorum",
       reminder_frequency: "Hatırlatma Sıklığı",
       reminderFrequencies: {
+        every_1_min: "Her 1 Dakika",
         every_30_mins: "30 Dakikada Bir",
         hourly: "Her saat",
         every_90_mins: "90 Dakikada Bir",
