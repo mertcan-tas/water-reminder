@@ -25,7 +25,7 @@ This application is a robust, cross-platform desktop solution designed to enhanc
 * **Pinia:** A lightweight and intuitive state management library for Vue, providing a simple yet powerful way to manage application data.
 * **Vuetify:** A comprehensive Material Design framework for Vue.js, providing a rich set of pre-built UI components for rapid development.
 
-## 🚀 Getting Started
+## Getting Started
 
 To set up and run the project locally, follow these steps:
 
@@ -55,11 +55,11 @@ To set up and run the project locally, follow these steps:
 
     Upon successful compilation, the executable files will be located in the `src-tauri/target/release` directory.
 
-## 🐛 Bug Reports
+## Bug Reports
 
 If you encounter any bugs or issues while using the application, please open an issue on the GitHub repository. Your feedback is valuable for improving the application.
 
-## 📄 License
+## License
 
 This project is licensed under the GPL-3.0 License. See the `LICENSE` file for more details.
 
