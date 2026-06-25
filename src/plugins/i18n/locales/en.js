@@ -7,6 +7,11 @@ export default {
     profile: "My Profile",
     settings: "Settings",
   },
+  notification: {
+    reminder_title: "Water Reminder",
+    reminder_body:
+      "Don't forget to drink water! You have drunk {amount} ml today.",
+  },
   pages: {
     home: {
       title: "Home",

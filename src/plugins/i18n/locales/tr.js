@@ -7,6 +7,10 @@ export default {
     profile: "Profilim",
     settings: "Ayarlar",
   },
+  notification: {
+    reminder_title: "Su İçme Hatırlatıcısı",
+    reminder_body: "Su içmeyi unutma! Bugün {amount} ml içtin.",
+  },
   pages: {
     home: {
       title: "Anasayfa",
