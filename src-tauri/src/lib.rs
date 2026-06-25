@@ -1,12 +1,6 @@
 use tauri_plugin_autostart::{init, MacosLauncher};
 
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-
-#[tauri::command]
 fn set_policy(app: tauri::AppHandle, policy: String) {
     #[cfg(target_os = "macos")]
     {
@@ -31,7 +25,7 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, set_policy])
+        .invoke_handler(tauri::generate_handler![set_policy])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
