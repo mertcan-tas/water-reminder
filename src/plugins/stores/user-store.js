@@ -146,7 +146,6 @@ export const useUserStore = defineStore("user", {
       try {
         await setValue("user_waterGoal", this.profile.waterGoal);
         await saveStore();
-        console.log("Recommended water target updated:", this.profile.waterGoal);
       } catch (err) {
         console.error("Error saving suggested water target:", err);
       }

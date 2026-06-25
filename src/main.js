@@ -21,7 +21,6 @@ async function initializeApp() {
     await userStore.initUserProfile();
     await themeStore.initSettings();
     await notificationService.startNotificationService();
-    console.log("All stores initialized and notification service started");
   } catch (error) {
     console.error("Error initializing app:", error);
   }

@@ -17,7 +17,6 @@ onMounted(async () => {
 
   try {
     await invoke("set_policy", { policy: "regular" });
-    console.log("Activation policy set to regular on startup.");
   } catch (error) {
     console.error("Failed to set activation policy to regular:", error);
   }
@@ -35,7 +34,6 @@ onMounted(async () => {
     await hideWindow();
     try {
       await invoke("set_policy", { policy: "accessory" });
-      console.log("Activation policy set to accessory on close.");
     } catch (error) {
       console.error(
         "Failed to set activation policy to accessory on close:",
@@ -48,7 +46,6 @@ onMounted(async () => {
     await hideWindow();
     try {
       await invoke("set_policy", { policy: "accessory" });
-      console.log("Activation policy set to accessory via Command+Q.");
     } catch (error) {
       console.error(
         "Failed to set activation policy to accessory via Command+Q:",
@@ -68,7 +65,6 @@ onMounted(async () => {
           await currentWindow.setFocus();
           try {
             await invoke("set_policy", { policy: "regular" });
-            console.log("Activation policy set to regular via tray menu.");
           } catch (error) {
             console.error(
               "Failed to set activation policy to regular via tray menu:",

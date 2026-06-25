@@ -28,7 +28,6 @@ async function initializeDefaultValues() {
   }
 
   if (await store.get("firstLaunch")) {
-    console.log("First launch detected!");
     await store.set("firstLaunch", false);
     await store.save();
   }

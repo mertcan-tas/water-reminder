@@ -38,7 +38,6 @@ export const useSettingsStore = defineStore("appSettings", {
             (await getValue("settings_sleepTime")) || "23:00";
 
           this.initialized = true;
-          console.log("Disk-based app settings initialized.");
         } catch (err) {
           console.error(
             "An error occurred while loading disk-based app settings:",
@@ -51,10 +50,6 @@ export const useSettingsStore = defineStore("appSettings", {
         try {
           this.config.autoStartEnabled = await isEnabled();
           this.autostartInitialized = true;
-          console.log(
-            "Autostart status initialized from plugin:",
-            this.config.autoStartEnabled
-          );
         } catch (err) {
           console.error(
             "Error checking autostart status (initAppSettings):",
@@ -104,9 +99,6 @@ export const useSettingsStore = defineStore("appSettings", {
             await setValue("settings_wakeTime", diskSettings.wakeTime);
           if (diskSettings.sleepTime !== undefined)
             await setValue("settings_sleepTime", diskSettings.sleepTime);
-          console.log(
-            "Disk-based app settings updated in Pinia and Tauri store."
-          );
         }
       } catch (err) {
         console.error(
@@ -122,11 +114,9 @@ export const useSettingsStore = defineStore("appSettings", {
         if (currentStatus) {
           await disable();
           this.config.autoStartEnabled = false;
-          console.log("Autostart is disabled.");
         } else {
           await enable();
           this.config.autoStartEnabled = true;
-          console.log("Autostart activated.");
         }
       } catch (err) {
         console.error(
