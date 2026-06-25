@@ -1,65 +1,146 @@
-# Water Reminder (Tauri + Vue 3 + Pinia)
+# Water Reminder
+
+> A lightweight, local-first desktop app that reminds you to drink water and helps you reach your daily hydration goal.
 
 <p align="center">
-	<img src="src/assets/preview/preview.gif"/>
+	<img src="src/assets/preview/preview.gif" alt="Water Reminder preview" />
 </p>
 
-This application is a robust, cross-platform desktop solution designed to enhance daily hydration habits. Built with a modern tech stack including Tauri for native performance, Vue 3 for a dynamic user interface, and Pinia for efficient state management, it offers a seamless and intuitive experience for tracking water intake and ensuring consistent hydration through intelligent reminders.
+## Description
 
-### Key Features & Benefits
+Water Reminder is a cross-platform desktop application that helps you build a
+consistent hydration habit. It runs quietly in the system tray and sends you
+configurable reminders to drink water throughout your day, tracks your intake
+against a personalized daily goal, and celebrates when you hit your target.
 
-* **Intelligent Hydration Reminders:** Configurable notification schedules allow users to receive timely reminders to drink water, preventing dehydration and promoting consistent intake.
-* **Personalized Hydration Goals:** Users can set and track daily water intake targets, with progress visualized for easy monitoring and motivation.
-* **User-Centric Customization:** Flexible settings for notification frequency, silent hours (wake/sleep times), and notification enablement ensure the application adapts to individual lifestyles without disruption.
-* **System Integration (Autostart):** Seamless integration with the operating system allows the application to start automatically, ensuring continuous hydration support from the moment the user logs in.
-* **Modern UI/UX:** A clean, responsive, and intuitive interface powered by Vue 3 offers an engaging user experience.
-* **Lightweight & Performant:** Leveraging Tauri, the application delivers near-native performance with a significantly smaller footprint compared to Electron-based alternatives, ensuring minimal resource consumption.
-* **Data Privacy & Security:** User data and settings are stored locally, emphasizing privacy and offering a secure personal health tracking solution.
-* **Multi-language Support:** The application supports multiple languages, catering to a diverse user base.
-* **Daily Reset Mechanism:** Water intake and goal completion status automatically reset daily, providing a fresh start and continuous motivation.
+The app is built with [Tauri](https://tauri.app/), so it ships as a small,
+fast, native binary instead of a heavy browser bundle. All of your data and
+settings are stored locally on your machine — nothing is sent anywhere.
 
-### Technical Stack
+## Features
 
-* **Tauri:** A framework for building secure, optimized, and cross-platform desktop applications using web technologies. Written in Rust, it ensures high performance and security.
-* **Vue 3:** The progressive JavaScript framework for building user interfaces, offering reactivity, component-based architecture, and excellent performance.
-* **Pinia:** A lightweight and intuitive state management library for Vue, providing a simple yet powerful way to manage application data.
-* **Vuetify:** A comprehensive Material Design framework for Vue.js, providing a rich set of pre-built UI components for rapid development.
+- **Hydration reminders** — Receive native desktop notifications at a frequency
+  you choose (every 1, 30, 60, 90, 120, or 180 minutes).
+- **Daily goals** — Set a daily water target (manually, or auto-calculated from
+  your weight, age, and activity level) and watch your progress fill up.
+- **Silent hours** — Configure wake-up and sleep times so reminders are only
+  sent while you are awake. Overnight ranges (e.g. 22:00 → 07:00) are handled
+  correctly.
+- **Autostart** — Optionally launch the app automatically when you log in.
+- **System tray** — The window minimizes to the tray on close; reopen, restart,
+  or quit from the tray menu.
+- **Multi-language** — Ships with English and Turkish, switchable at runtime.
+- **Daily reset** — Your water intake and goal-completion status reset
+  automatically at the start of each day.
+- **Goal celebration** — Confetti and a sound effect when you reach your goal.
+- **Local-first** — All profile data and settings are persisted on disk via the
+  Tauri Store plugin; no account or network connection required.
+- **Light & dark themes** — Toggle between themes at any time.
 
-## Getting Started
+## Tech Stack
 
-To set up and run the project locally, follow these steps:
+- **[Tauri](https://tauri.app/) (Rust)** — Cross-platform native shell and
+  build tooling.
+- **[Vue 3](https://vuejs.org/)** — Frontend framework (Composition + Options API).
+- **[Vuetify 3](https://vuetifyjs.com/)** — Material Design component library.
+- **[Pinia](https://pinia.vuejs.org/)** — State management.
+- **[Vue Router](https://router.vuejs.org/)** — Client-side routing.
+- **[vue-i18n](https://vue-i18n.intlify.dev/)** — Internationalization.
+- **[Vite](https://vite.dev/)** — Frontend build tooling.
 
-1.  **Clone the Repository:**
+### Tauri plugins
 
-    ```bash
-    git clone https://github.com/mertcan-tas/water-reminder.git
-    ```
+- `@tauri-apps/plugin-notification` — native desktop notifications
+- `@tauri-apps/plugin-autostart` — launch on login
+- `@tauri-apps/plugin-global-shortcut` — global keyboard shortcuts
+- `@tauri-apps/plugin-store` — local key/value persistence
+- `@tauri-apps/plugin-process` — relaunch / exit the app
+- `@tauri-apps/plugin-opener` — open external resources
 
-2.  **Install Dependencies:**
+## Prerequisites
 
-    ```bash
-    pnpm install
-    ```
+- **[Node.js](https://nodejs.org/)** 18 or newer
+- **[pnpm](https://pnpm.io/)** (this project pins a `pnpm` version via
+  `packageManager`; install with `corepack enable` or from the pnpm website)
+- **Rust toolchain** — install via [rustup](https://rustup.rs/)
+- The platform-specific system dependencies required by Tauri. See the
+  [Tauri prerequisites guide](https://tauri.app/start/prerequisites/) for your
+  operating system.
 
-3.  **Run in Development Mode:**
+## Install
 
-    ```bash
-    pnpm tauri dev
-    ```
+Clone the repository and install the frontend dependencies:
 
-4.  **Build for Production:**
+```bash
+git clone https://github.com/mertcan-tas/water-reminder.git
+cd water-reminder
+pnpm install
+```
 
-    ```bash
-    pnpm tauri build
-    ```
+## Development
 
-    Upon successful compilation, the executable files will be located in the `src-tauri/target/release` directory.
+Run the Vite dev server (frontend only, in the browser):
+
+```bash
+pnpm dev
+```
+
+Run the full desktop app in development mode (Tauri window with hot reload):
+
+```bash
+pnpm tauri dev
+```
+
+## Build
+
+Build the frontend assets into `dist/`:
+
+```bash
+pnpm build
+```
+
+Build the production desktop binaries and installers:
+
+```bash
+pnpm tauri build
+```
+
+The compiled executables and bundles are written to
+`src-tauri/target/release/` (with platform installers under
+`src-tauri/target/release/bundle/`).
+
+## Project Structure
+
+```
+water-reminder/
+├── index.html                # Vite entry HTML
+├── vite.config.js            # Vite + Vuetify + Fonts configuration
+├── src/                      # Vue frontend
+│   ├── main.js               # App bootstrap & store/service init
+│   ├── App.vue               # Root component, system tray & window logic
+│   ├── assets/               # Styles, sounds, preview image
+│   ├── components/           # Reusable UI components
+│   ├── layouts/              # App bar, bottom navigation, base layout
+│   ├── plugins/              # Pinia stores, router, Vuetify, i18n
+│   │   ├── stores/           #   theme / settings / user stores
+│   │   └── i18n/locales/     #   en.js, tr.js
+│   ├── services/             # Notification, schedule & local-store services
+│   ├── utils/                # Confetti & alert helpers
+│   └── views/                # Home, Profile, Settings pages
+└── src-tauri/                # Rust / Tauri backend
+    ├── Cargo.toml            # Rust dependencies
+    ├── tauri.conf.json       # Tauri app configuration
+    ├── capabilities/         # Permission capability definitions
+    └── src/                  # Rust source (lib.rs, main.rs)
+```
 
 ## Bug Reports
 
-If you encounter any bugs or issues while using the application, please open an issue on the GitHub repository. Your feedback is valuable for improving the application.
+Found a bug or have a feature request? Please
+[open an issue](https://github.com/mertcan-tas/water-reminder/issues) on GitHub.
+Including your operating system, app version, and steps to reproduce helps a lot.
 
 ## License
 
-This project is licensed under the GPL-3.0 License. See the `LICENSE` file for more details.
-
+This project is licensed under the **GPL-3.0** License. See the
+[`LICENSE`](LICENSE) file for the full text.
